@@ -27,7 +27,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
     private List<Country> countries;
     private List<Country> filteredCountries;
     private Country country;
-    //private int lastPosition = -1, oldPosition = -1;
+    private int lastPosition = -1, oldPosition = -1;
     
     public void setCountries(List<Country> countries) {
         this.countries = countries;
@@ -51,7 +51,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
         viewHolder.recyclerView.setAdapter(childAdapter);
         new ItemTouchHelper(itemTouchCallbacks).attachToRecyclerView(viewHolder.recyclerView);
         
-        /*viewHolder.layout.setOnClickListener(new View.OnClickListener() {
+        viewHolder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 oldPosition = lastPosition;
@@ -65,7 +65,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
             viewHolder.recyclerView.setVisibility(View.VISIBLE);
         } else {
             viewHolder.recyclerView.setVisibility(View.GONE);
-        }*/
+        }
     }
     
     @Override
