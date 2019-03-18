@@ -1,9 +1,13 @@
 package coding.assignment.shadowfax.app.views;
 
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import coding.assignment.shadowfax.app.R;
 import coding.assignment.shadowfax.app.models.CountriesDataFactory;
@@ -28,5 +32,30 @@ public class MainActivity extends AppCompatActivity {
         parentAdapter.setCountries(CountriesDataFactory.getCountries());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(parentAdapter);
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+        MenuItem item = menu.findItem(R.id.search_id);
+    
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        search(searchView);
+        return true;
+    }
+    
+    private void search(SearchView searchView) {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+            
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                parentAdapter.getFilter().filter(newText);
+                return true;
+            }
+        });
     }
 }

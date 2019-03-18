@@ -8,8 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import coding.assignment.shadowfax.app.R;
@@ -19,14 +22,16 @@ import coding.assignment.shadowfax.app.models.Country;
 /**
  * Created by varun.am on 18/03/19
  */
-public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder> {
+public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder> implements Filterable {
     
     private List<Country> countries;
+    private List<Country> filteredCountries;
     private Country country;
     //private int lastPosition = -1, oldPosition = -1;
     
     public void setCountries(List<Country> countries) {
         this.countries = countries;
+        this.filteredCountries = countries;
     }
     
     @NonNull
@@ -38,7 +43,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
     
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
-        country = countries.get(i);
+        country = filteredCountries.get(i);
         viewHolder.title.setText(country.getTitle());
         ChildAdapter childAdapter = new ChildAdapter();
         childAdapter.setCities(country.getCities());
@@ -65,10 +70,35 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
     
     @Override
     public int getItemCount() {
-        if (countries != null)
-            return countries.size();
+        if (filteredCountries != null)
+            return filteredCountries.size();
         else
             return 0;
+    }
+    
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String searchedString = charSequence.toString().toLowerCase();
+                List<Country> newCountries = new ArrayList<>();
+                for(Country country: countries){
+                    if(country.getTitle().toLowerCase().contains(searchedString)){
+                        newCountries.add(country);
+                    }
+                }
+                FilterResults results = new FilterResults();
+                results.values = newCountries;
+                return results;
+            }
+    
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                filteredCountries = (List<Country>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
     }
     
     public class ViewHolder extends RecyclerView.ViewHolder {
